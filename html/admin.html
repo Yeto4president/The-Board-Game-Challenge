@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Administration - BoardGameArena</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      padding: 20px;
+      background-color: #f4f4f4;
+      padding-top: 110px;
+    }
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 10px;
+      height: 80px;
+      background: var(--card-bg, #fff);
+      border-radius: 15px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+      padding: 10px 20px;
+      transition: transform 0.3s ease;
+    }
+    header img {
+      max-width: 100px;
+      margin-right: 10px;
+    }
+    .logo-text {
+      font-size: 2.2em;
+      font-weight: 700;
+      color: transparent;
+      background: linear-gradient(45deg, #e63946, #d62828);
+      background-clip: text;
+      -webkit-background-clip: text;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+    }
+    nav {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 0;
+    }
+    nav a, nav span {
+      margin: 0 5px;
+      padding: 5px 8px;
+      font-size: 0.9em;
+      border-radius: 20px;
+      white-space: nowrap;
+      color: #e63946;
+      font-weight: 500;
+      text-decoration: none;
+      transition: color 0.3s ease, text-shadow 0.3s ease;
+    }
+    nav a.active {
+      background-color: #e63946;
+      color: #fff;
+    }
+    nav a:hover {
+      color: #d62828;
+      text-shadow: 0 0 5px rgba(230, 57, 70, 0.3);
+    }
+    h2 {
+      color: #e63946;
+    }
+    .section {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      margin-bottom: 20px;
+    }
+    .item {
+      border-bottom: 1px solid #ccc;
+      padding: 15px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .item:last-child {
+      border-bottom: none;
+    }
+    .game-details {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      max-width: 70%;
+    }
+    .game-image {
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+      margin-right: 15px;
+      border-radius: 4px;
+    }
+    .game-info {
+      flex: 1;
+    }
+    .game-info p {
+      margin: 5px 0;
+      font-size: 14px;
+    }
+    .game-info strong {
+      color: #333;
+    }
+    .action-buttons {
+      display: flex;
+      gap: 5px;
+    }
+    .action-buttons button {
+      padding: 5px 10px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .approve {
+      background-color: #4CAF50;
+      color: #fff;
+    }
+    .reject, .delete {
+      background-color: #e63946;
+      color: #fff;
+    }
+    .edit {
+      background-color: #2196F3;
+      color: #fff;
+    }
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0,0,0,0.4);
+    }
+    .modal-content {
+      background-color: #fefefe;
+      margin: 15% auto;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 80%;
+      max-width: 500px;
+    }
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+    }
+    .close:hover,
+    .close:focus {
+      color: black;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+    }
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    .form-group button {
+      background-color: #4CAF50;
+      color: #fff;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .form-group button:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="/img/tbgc-logo.png" alt="Logo BoardGameArena" onerror="this.style.display='none';">
+    <div class="logo-text">BoardGameArena</div>
+    <nav>
+      <a href="accueil.html" class="active">Accueil</a>
+      <a href="tournoi.html">Tournoi</a>
+      <a href="profile.html" id="profileLink" style="display: none;">Mon Profil</a>
+      <a href="add-game.html" id="addGameLink" style="display: none;">Ajouter un jeu</a>
+      <a href="accounte.html" id="loginLink">Connexion</a>
+      <span id="userInfoBarre" class="user-info"></span>
+      <a href="#" id="logoutLink" style="display: none;">Déconnexion</a>
+      <a href="admin.html" id="adminLink" style="display: none;">Admin</a>
+    </nav>
+  </header>
+  <main>
+    <section class="section">
+      <h2>Créer un nouveau profil</h2>
+      <div class="form-group">
+        <label for="newPseudo">Pseudo :</label>
+        <input type="text" id="newPseudo">
+      </div>
+      <div class="form-group">
+        <label for="newEmail">Email :</label>
+        <input type="email" id="newEmail">
+      </div>
+      <div class="form-group">
+        <label for="newPassword">Mot de passe :</label>
+        <input type="password" id="newPassword">
+      </div>
+      <div class="form-group">
+        <label for="newRole">Rôle :</label>
+        <select id="newRole">
+          <option value="utilisateur">Utilisateur</option>
+          <option value="admin">Admin</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <button onclick="createUser()">Créer</button>
+      </div>
+    </section>
+    <section class="section">
+      <h2>Jeux en attente de validation</h2>
+      <div id="pendingGames"></div>
+    </section>
+    <section class="section">
+      <h2>Commentaires en attente de validation</h2>
+      <div id="pendingComments"></div>
+    </section>
+    <section class="section">
+      <h2>Votes pour le jeu du mois</h2>
+      <div id="monthlyVotes"></div>
+    </section>
+    <section class="section">
+      <h2>Gérer les utilisateurs</h2>
+      <div id="usersList"></div>
+    </section>
+    <section class="section">
+      <h2>Gérer les jeux</h2>
+      <div id="gamesList"></div>
+    </section>
+  </main>
+  <div id="editUserModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('editUserModal')">×</span>
+      <h3>Modifier l'utilisateur</h3>
+      <div class="form-group">
+        <label for="editPseudo">Pseudo :</label>
+        <input type="text" id="editPseudo">
+      </div>
+      <div class="form-group">
+        <label for="editEmail">Email :</label>
+        <input type="email" id="editEmail">
+      </div>
+      <div class="form-group">
+        <label for="editRole">Rôle :</label>
+        <select id="editRole">
+          <option value="utilisateur">Utilisateur</option>
+          <option value="admin">Admin</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <button onclick="saveUserChanges()">Sauvegarder</button>
+      </div>
+    </div>
+  </div>
+  <div id="editGameModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('editGameModal')">×</span>
+      <h3>Modifier le jeu</h3>
+      <div class="form-group">
+        <label for="editGameName">Nom :</label>
+        <input type="text" id="editGameName">
+      </div>
+      <div class="form-group">
+        <label for="editGenre">Genre :</label>
+        <input type="text" id="editGenre">
+      </div>
+      <div class="form-group">
+        <label for="editMinPlayers">Joueurs min :</label>
+        <input type="number" id="editMinPlayers">
+      </div>
+      <div class="form-group">
+        <label for="editMaxPlayers">Joueurs max :</label>
+        <input type="number" id="editMaxPlayers">
+      </div>
+      <div class="form-group">
+        <label for="editDuration">Durée (min) :</label>
+        <input type="number" id="editDuration">
+      </div>
+      <div class="form-group">
+        <label for="editReleaseDate">Date de sortie :</label>
+        <input type="date" id="editReleaseDate">
+      </div>
+      <div class="form-group">
+        <label for="editDescription">Description :</label>
+        <textarea id="editDescription"></textarea>
+      </div>
+      <div class="form-group">
+        <button onclick="saveGameChanges()">Sauvegarder</button>
+      </div>
+    </div>
+  </div>
+  <script>
+    function parseJwt(token) {
+      try {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(atob(base64).split('').map(c => {
+          return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+        return JSON.parse(jsonPayload);
+      } catch (error) {
+        return null;
+      }
+    }
+
+    function displayUserInfoBarre() {
+      const token = localStorage.getItem('token');
+      const userInfoBarre = document.getElementById('userInfoBarre');
+      const logoutLink = document.getElementById('logoutLink');
+      const loginLink = document.getElementById('loginLink');
+      const addGameLink = document.getElementById('addGameLink');
+      const adminLink = document.getElementById('adminLink');
+      const profileLink = document.getElementById('profileLink');
+      if (!userInfoBarre || !logoutLink || !loginLink || !addGameLink || !adminLink || !profileLink) return;
+      if (token) {
+        const decoded = parseJwt(token);
+        if (!decoded) {
+          localStorage.removeItem('token');
+          window.location.href = 'accounte.html';
+          return;
+        }
+        userInfoBarre.textContent = `Bienvenue, ${decoded.pseudo}`;
+        logoutLink.style.display = 'inline';
+        loginLink.style.display = 'none';
+        addGameLink.style.display = 'inline';
+        profileLink.style.display = 'inline';
+        logoutLink.onclick = () => {
+          localStorage.removeItem('token');
+          window.location.reload();
+        };
+        addGameLink.onclick = () => {
+          window.location.href = 'add-game.html';
+        };
+        if (decoded.role && decoded.role === 'admin') {
+          adminLink.style.display = 'inline';
+        } else {
+          adminLink.style.display = 'none';
+        }
+      } else {
+        userInfoBarre.textContent = '';
+        logoutLink.style.display = 'none';
+        loginLink.style.display = 'inline';
+        addGameLink.style.display = 'none';
+        adminLink.style.display = 'none';
+        profileLink.style.display = 'none';
+      }
+    }
+
+    let lastScrollTop = 0;
+    const header = document.querySelector('header');
+    window.addEventListener('scroll', () => {
+      let currentScrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      if (currentScrollTop > lastScrollTop) {
+        header.style.transform = 'translateY(-100%)';
+      } else {
+        header.style.transform = 'translateY(0)';
+      }
+      lastScrollTop = currentScrollTop <= 0 ? 0 : currentScrollTop;
+    });
+    displayUserInfoBarre();
+
+    function logout() {
+      localStorage.removeItem('token');
+      window.location.href = 'accounte.html';
+    }
+
+    function closeModal(modalId) {
+      document.getElementById(modalId).style.display = 'none';
+    }
+
+    async function createUser() {
+      const token = localStorage.getItem('token');
+      const pseudo = document.getElementById('newPseudo').value;
+      const email = document.getElementById('newEmail').value;
+      const mot_de_passe = document.getElementById('newPassword').value;
+      const role = document.getElementById('newRole').value;
+
+      if (!pseudo || !email || !mot_de_passe) {
+        alert('Veuillez remplir tous les champs obligatoires.');
+        return;
+      }
+
+      try {
+        const response = await fetch('http://localhost:3000/api/register', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ Pseudo: pseudo, email, mot_de_passe, role })
+        });
+        const data = await response.json();
+        if (response.ok) {
+          alert('Utilisateur créé avec succès.');
+          document.getElementById('newPseudo').value = '';
+          document.getElementById('newEmail').value = '';
+          document.getElementById('newPassword').value = '';
+          document.getElementById('newRole').value = 'utilisateur';
+          loadUsers();
+        } else {
+          alert(data.message || 'Erreur lors de la création de l\'utilisateur.');
+        }
+      } catch (error) {
+        console.error('Erreur:', error);
+        alert('Erreur lors de la création de l\'utilisateur.');
+      }
+    }
+
+    async function loadPendingGames() {
+      const token = localStorage.getItem('token');
+      try {
+        const response = await fetch('http://localhost:3000/api/pending-games', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const games = await response.json();
+        const pendingGamesDiv = document.getElementById('pendingGames');
+        pendingGamesDiv.innerHTML = games.map(game => `
+          <div class="item">
+            <div class="game-details">
+              <img src="${game.image_url || '/img/default.jpg'}" alt="${game.Nom_jeux}" class="game-image">
+              <div class="game-info">
+                <p><strong>Nom :</strong> ${game.Nom_jeux}</p>
+                <p><strong>Genre :</strong> ${game.genre || 'Non spécifié'}</p>
+                <p><strong>Description :</strong> ${game.description || 'Aucune description'}</p>
+                <p><strong>Joueurs :</strong> ${game.min_joueurs || 'N/A'} - ${game.max_joueurs || 'N/A'}</p>
+                <p><strong>Durée moyenne :</strong> ${game.duree_moyenne ? game.duree_moyenne + ' min' : 'N/A'}</p>
+                <p><strong>Date de sortie :</strong> ${game.date_Sortie || 'Non spécifiée'}</p>
+                <p><strong>Statut :</strong> ${game.status}</p>
+              </div>
+            </div>
+            <div class="action-buttons">
+              <button class="approve" onclick="validateGame(${game.id}, 'approve')">Approuver</button>
+              <button class="reject" onclick="validateGame(${game.id}, 'reject')">Rejeter</button>
+            </div>
+          </div>
+        `).join('');
+      } catch (error) {
+        console.error('Erreur:', error);
+        document.getElementById('pendingGames').innerHTML = '<p>Erreur lors du chargement des jeux en attente.</p>';
+      }
+    }
+
+    async function validateGame(id, action) {
+      const token = localStorage.getItem('token');
+      try {
+        const response = await fetch(`http://localhost:3000/api/validate-game/${id}`, {
+          method: 'POST',
+          headers: { 
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ action })
+        });
+        const data = await response.json();
+        alert(data.message);
+        loadPendingGames();
+      } catch (error) {
+        console.error('Erreur:', error);
+        alert('Erreur lors de la validation du jeu.');
+      }
+    }
+
+    async function loadPendingComments() {
+      const token = localStorage.getItem('token');
+      try {
+        const response = await fetch('http://localhost:3000/api/pending-comments', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const comments = await response.json();
+        const pendingCommentsDiv = document.getElementById('pendingComments');
+        pendingCommentsDiv.innerHTML = comments.map(comment => `
+          <div class="item">
+            <span>${comment.Nom_jeux}: "${comment.contenu}"</span>
+            <div class="action-buttons">
+              <button class="approve" onclick="validateComment(${comment.id_commentaire}, 'approve')">Approuver</button>
+              <button class="reject" onclick="validateComment(${comment.id_commentaire}, 'reject')">Rejeter</button>
+            </div>
+          </div>
+        `).join('');
+      } catch (error) {
+        console.error('Erreur:', error);
+        document.getElementById('pendingComments').innerHTML = '<p>Erreur lors du chargement des commentaires en attente.</p>';
+      }
+    }
+
+    async function validateComment(id, action) {
+      const token = localStorage.getItem('token');
+      try {
+        const response = await fetch(`http://localhost:3000/api/validate-comment/${id}`, {
+          method: 'POST',
+          headers: { 
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ action })
+        });
+        const data = await response.json();
+        alert(data.message);
+        loadPendingComments();
+      } catch (error) {
+        console.error('Erreur:', error);
+        alert('Erreur lors de la validation du commentaire.');
+      }
+    }
+
+    async function loadMonthlyVotes() {
+      const token = localStorage.getItem('token');
+      try {
+        const response = await fetch('http://localhost:3000/api/votes', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const votes = await response.json();
+        const monthlyVotesDiv = document.getElementById('monthlyVotes');
+        monthlyVotesDiv.innerHTML = votes.map(vote => `
+          <div class="item">
+            <span>${vote.Nom_jeux}: ${vote.voteCount} vote(s)</span>
+          </div>
+        `).join('');
+      } catch (error) {
+        console.error('Erreur:', error);
+        document.getElementById('monthlyVotes').innerHTML = '<p>Erreur lors du chargement des votes.</p>';
+      }
+    }
+
+    async function loadUsers() {
+      const token = localStorage.getItem('token');
+      try {
+        const response = await fetch('http://localhost:3000/api/users', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const users = await response.json();
+        const usersListDiv = document.getElementById('usersList');
+        usersListDiv.innerHTML = users.map(user => `
+          <div class="item">
+            <span>${user.Pseudo} (${user.email}) - ${user.role}</span>
+            <div class="action-buttons">
+              <button class="edit" onclick="editUser(${user.ID_utilisateur}, '${user.Pseudo}', '${user.email}', '${user.role}')">Modifier</button>
+              <button class="delete" onclick="deleteUser(${user.ID_utilisateur})">Supprimer</button>
+            </div>
+          </div>
+        `).join('');
+      } catch (error) {
+        console.error('Erreur:', error);
+        document.getElementById('usersList').innerHTML = '<p>Erreur lors du chargement des utilisateurs.</p>';
+      }
+    }
+
+    async function editUser(id, pseudo, email, role) {
+      document.getElementById('editPseudo').value = pseudo;
+      document.getElementById('editEmail').value = email;
+      document.getElementById('editRole').value = role;
+      document.getElementById('editUserModal').style.display = 'block';
+      window.currentUserId = id;
+    }
+
+    async function saveUserChanges() {
+      const token = localStorage.getItem('token');
+      const id = window.currentUserId;
+      const pseudo = document.getElementById('editPseudo').value;
+      const email = document.getElementById('editEmail').value;
+      const role = document.getElementById('editRole').value;
+      try {
+        const response = await fetch(`http://localhost:3000/api/users/${id}`, {
+          method: 'PUT',
+          headers: { 
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ pseudo, email, role })
+        });
+        const data = await response.json();
+        alert(data.message);
+        closeModal('editUserModal');
+        loadUsers();
+      } catch (error) {
+        console.error('Erreur:', error);
+        alert('Erreur lors de la modification de l\'utilisateur.');
+      }
+    }
+
+    async function loadGames() {
+      const token = localStorage.getItem('token');
+      try {
+        const response = await fetch('http://localhost:3000/api/jeux', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const games = await response.json();
+        const gamesListDiv = document.getElementById('gamesList');
+        gamesListDiv.innerHTML = games.map(game => {
+          // Échapper les chaînes pour éviter les problèmes de syntaxe
+          const escape = str => str ? str.replace(/'/g, "\\'").replace(/"/g, '\\"') : '';
+          const safeName = escape(game.Nom_jeux);
+          const safeGenre = escape(game.genre || '');
+          const safeDescription = escape(game.description || '');
+          const minPlayers = game.min_joueurs || 0;
+          const maxPlayers = game.max_joueurs || 0;
+          const duration = game.duree_moyenne || 0;
+          const releaseDate = game.date_Sortie || '';
+
+          return `
+            <div class="item">
+              <span>${game.Nom_jeux}</span>
+              <div class="action-buttons">
+                <button class="edit" onclick="editGame(${game.ID_jeux}, '${safeName}', '${safeGenre}', ${minPlayers}, ${maxPlayers}, ${duration}, '${releaseDate}', '${safeDescription}')">Modifier</button>
+                <button class="delete" onclick="deleteGame(${game.ID_jeux})">Supprimer</button>
+              </div>
+            </div>
+          `;
+        }).join('');
+      } catch (error) {
+        console.error('Erreur:', error);
+        document.getElementById('gamesList').innerHTML = '<p>Erreur lors du chargement des jeux.</p>';
+      }
+    }
+
+    async function editGame(id, name, genre, minPlayers, maxPlayers, duration, releaseDate, description) {
+      document.getElementById('editGameName').value = name;
+      document.getElementById('editGenre').value = genre;
+      document.getElementById('editMinPlayers').value = minPlayers;
+      document.getElementById('editMaxPlayers').value = maxPlayers;
+      document.getElementById('editDuration').value = duration;
+      document.getElementById('editReleaseDate').value = releaseDate;
+      document.getElementById('editDescription').value = description;
+      document.getElementById('editGameModal').style.display = 'block';
+      window.currentGameId = id;
+    }
+
+    async function saveGameChanges() {
+      const token = localStorage.getItem('token');
+      const id = window.currentGameId;
+      const name = document.getElementById('editGameName').value;
+      const genre = document.getElementById('editGenre').value;
+      const minPlayers = parseInt(document.getElementById('editMinPlayers').value) || 0;
+      const maxPlayers = parseInt(document.getElementById('editMaxPlayers').value) || 0;
+      const duration = parseInt(document.getElementById('editDuration').value) || 0;
+      const releaseDate = document.getElementById('editReleaseDate').value;
+      const description = document.getElementById('editDescription').value;
+
+      if (!name || !genre || !releaseDate) {
+        alert('Veuillez remplir tous les champs obligatoires (Nom, Genre, Date de sortie).');
+        return;
+      }
+
+      try {
+        const response = await fetch(`http://localhost:3000/api/games/${id}`, {
+          method: 'PUT',
+          headers: { 
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ 
+            Nom_jeux: name, 
+            genre, 
+            min_joueurs: minPlayers, 
+            max_joueurs: maxPlayers, 
+            duree_moyenne: duration, 
+            date_Sortie: releaseDate, 
+            description: description || ''
+          })
+        });
+        const data = await response.json();
+        if (response.ok) {
+          alert(data.message);
+          closeModal('editGameModal');
+          loadGames();
+        } else {
+          alert(data.message || 'Erreur lors de la modification du jeu.');
+        }
+      } catch (error) {
+        console.error('Erreur:', error);
+        alert('Erreur lors de la modification du jeu.');
+      }
+    }
+
+    async function deleteUser(id) {
+      const token = localStorage.getItem('token');
+      try {
+        const response = await fetch(`http://localhost:3000/api/users/${id}`, {
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await response.json();
+        alert(data.message);
+        loadUsers();
+      } catch (error) {
+        console.error('Erreur:', error);
+        alert('Erreur lors de la suppression de l\'utilisateur.');
+      }
+    }
+
+    async function deleteGame(id) {
+      const token = localStorage.getItem('token');
+      try {
+        const response = await fetch(`http://localhost:3000/api/games/${id}`, {
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await response.json();
+        alert(data.message);
+        loadGames();
+      } catch (error) {
+        console.error('Erreur:', error);
+        alert('Erreur lors de la suppression du jeu.');
+      }
+    }
+
+    loadPendingGames();
+    loadPendingComments();
+    loadMonthlyVotes();
+    loadUsers();
+    loadGames();
+  </script>
+</body>
+</html>

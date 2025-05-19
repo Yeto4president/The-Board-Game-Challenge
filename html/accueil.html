@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Accueil - BoardGameArena</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    /* Variables CSS pour une palette de couleurs cohérente */
+    :root {
+      --primary-color: #e63946;
+      --primary-dark: #d62828;
+      --background-start: #f0f2f5;
+      --background-end: #e0e7ff;
+      --card-bg: rgba(255, 255, 255, 0.95);
+      --text-primary: #2a2a2a;
+      --text-secondary: #555;
+      --text-muted: #666;
+      --border-color: #eee;
+      --shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, var(--background-start) 0%, var(--background-end) 100%);
+      color: var(--text-primary);
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+      padding-top: 110px; /* Espace pour éviter que le contenu ne soit masqué par le header */
+    }
+
+    header {
+      text-align: center;
+      padding: 10px 20px;
+      background-color: var(--card-bg);
+      border-radius: 15px;
+      box-shadow: var(--shadow);
+      position: fixed; /* Fixé en haut de la page */
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000; /* Au-dessus des autres éléments */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 10px; /* Marge pour éviter de coller aux bords */
+      height: 80px; /* Hauteur fixe pour un décalage cohérent */
+      transition: transform 0.3s ease; /* Transition fluide pour le masquage/affichage */
+    }
+
+    header:hover {
+      transform: scale(1.02);
+    }
+
+    header img {
+      max-width: 100px;
+      margin-right: 10px;
+    }
+
+    .logo-text {
+      font-size: 2.2em;
+      font-weight: 700;
+      color: var(--primary-color);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      background: linear-gradient(45deg, var(--primary-color), var(--primary-dark));
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+    }
+
+    nav a, nav span {
+      margin: 0 5px; /* Réduit pour éviter le débordement */
+      padding: 5px 8px; /* Réduit pour un meilleur ajustement */
+      text-decoration: none;
+      color: var(--primary-color);
+      font-weight: 500;
+      font-size: 0.9em; /* Taille de police légèrement réduite */
+      transition: color 0.3s ease, text-shadow 0.3s ease;
+      border-radius: 20px;
+      white-space: nowrap; /* Évite que le texte des boutons ne passe à la ligne */
+    }
+
+    nav a:hover {
+      color: var(--primary-dark);
+      text-shadow: 0 0 5px rgba(230, 57, 70, 0.3);
+    }
+
+    nav a.active {
+      background-color: var(--primary-color);
+      color: #fff;
+    }
+
+    .game-of-month-wrapper {
+      background-color: #ff0000; /* Bande rouge */
+      padding: 10px; /* Épaisseur de la bande */
+      border-radius: 10px; /* Même radius que la section interne */
+      margin: 20px 0;
+    }
+
+    .game-of-month {
+      background-color: var(--primary-color);
+      color: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      transition: transform 0.3s ease;
+      position: relative;
+      min-height: 150px;
+    }
+
+    .game-of-month:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    }
+
+    .game-of-month img {
+      max-width: 150px;
+      border-radius: 5px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      display: block;
+      object-fit: cover;
+      width: 150px;
+      height: 150px;
+    }
+
+    .game-of-month h2 {
+      margin: 0;
+      font-size: 1.5em;
+      font-weight: bold;
+    }
+
+    .game-of-month .game-title {
+      font-size: 1.8em; /* Taille ajustée pour "Jeu du mois" */
+      font-weight: bold;
+      color: #fff;
+      text-transform: uppercase;
+      position: absolute;
+      top: 10px;
+      left: 20px;
+    }
+
+    .game-of-month .error {
+      color: #fff;
+      display: block;
+      font-style: italic;
+    }
+
+    .game-of-month .details-btn {
+      background-color: #fff;
+      color: var(--primary-color);
+      padding: 5px 10px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background-color 0.3s ease;
+    }
+
+    .game-of-month .details-btn:hover {
+      background-color: #f0f0f0;
+    }
+
+    .catalogue {
+      margin: 20px 0;
+      padding: 20px;
+      background: var(--card-bg);
+      border-radius: 10px;
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      max-width: 1200px;
+      margin-left: auto;
+      margin-right: auto;
+      width: 90%;
+    }
+
+    .catalogue h2 {
+      color: var(--primary-color);
+      margin-bottom: 15px;
+      font-size: 1.5em;
+      text-align: center;
+      position: relative;
+    }
+
+    .catalogue h2::after {
+      content: '';
+      width: 50px;
+      height: 3px;
+      background: linear-gradient(90deg, var(--primary-color), transparent);
+      position: absolute;
+      bottom: -5px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .search-bar {
+      margin-bottom: 20px;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .search-bar input, .search-bar select {
+      padding: 10px;
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      outline: none;
+      font-size: 1em;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+      background-color: #fff;
+    }
+
+    .search-bar input:focus, .search-bar select:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 5px rgba(230, 57, 70, 0.3);
+    }
+
+    .search-bar input {
+      flex-grow: 1;
+      max-width: 300px;
+      padding-left: 40px;
+      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23e63946"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>') no-repeat 10px center;
+      background-size: 20px;
+    }
+
+    .game-card {
+      display: inline-block;
+      margin: 10px;
+      padding: 15px;
+      background: #ffffff;
+      border-radius: 10px;
+      text-align: center;
+      width: 180px;
+      box-shadow: var(--shadow);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .game-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    }
+
+    .game-card img {
+      max-width: 100%;
+      border-radius: 5px;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1001;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    .modal-content {
+      background-color: var(--card-bg);
+      margin: 10% auto;
+      padding: 20px;
+      border: 1px solid var(--border-color);
+      width: 80%;
+      max-width: 500px;
+      border-radius: 15px;
+      box-shadow: var(--shadow);
+    }
+
+    .close {
+      color: var(--text-muted);
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      transition: color 0.3s ease;
+    }
+
+    .close:hover,
+    .close:focus {
+      color: var(--text-primary);
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .comment-section {
+      margin-top: 20px;
+    }
+
+    #commentsContainer {
+      max-height: 200px;
+      overflow-y: auto;
+      border-top: 1px solid var(--border-color);
+      padding-top: 10px;
+      margin-top: 20px;
+    }
+
+    .comment {
+      margin-bottom: 10px;
+    }
+
+    .comment p {
+      margin: 5px 0;
+      color: var(--text-secondary);
+    }
+
+    .comment hr {
+      border: 0;
+      border-top: 1px solid var(--border-color);
+    }
+
+    #voteSection, #proposeGameForm {
+      display: none;
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    #voteSection select, #proposeGameForm select, #proposeGameForm input, #proposeGameForm textarea {
+      padding: 10px;
+      margin: 5px 0;
+      border: 1px solid var(--border-color);
+      border-radius: 5px;
+      width: 100%;
+      max-width: 300px;
+      transition: border-color 0.3s ease;
+    }
+
+    #voteSection select:focus, #proposeGameForm select:focus, #proposeGameForm input:focus, #proposeGameForm textarea:focus {
+      border-color: var(--primary-color);
+      outline: none;
+    }
+
+    #voteSection button, #proposeGameForm button {
+      background-color: var(--primary-color);
+      color: #fff;
+      padding: 8px 15px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: background-color 0.3s ease;
+    }
+
+    #voteSection button:hover, #proposeGameForm button:hover {
+      background-color: var(--primary-dark);
+    }
+
+    #modalTitle {
+      color: var(--primary-color);
+      margin-bottom: 10px;
+    }
+
+    #modalDescription, #modalGenre, #modalPlayers, #modalDuration, #modalRelease, #modalAvgScore {
+      color: var(--text-secondary);
+    }
+
+    #rateSelect, #commentInput {
+      width: 100%;
+      padding: 10px;
+      margin: 5px 0;
+      border: 1px solid var(--border-color);
+      border-radius: 5px;
+    }
+
+    #submitRateButton, #commentSubmit, #commentSend {
+      background-color: var(--primary-color);
+      color: #fff;
+      padding: 8px 15px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 5px;
+      transition: background-color 0.3s ease;
+    }
+
+    #submitRateButton:hover, #commentSubmit:hover, #commentSend:hover {
+      background-color: var(--primary-dark);
+    }
+
+    @media (max-width: 600px) {
+      .search-bar {
+        flex-direction: column;
+        gap: 5px;
+      }
+      .search-bar input, .search-bar select {
+        max-width: 100%;
+      }
+      .game-of-month {
+        flex-direction: column;
+        gap: 10px;
+      }
+      .logo-text {
+        font-size: 1.5em; /* Réduit la taille du texte du logo sur mobile */
+      }
+      header img {
+        max-width: 80px; /* Réduit la taille du logo sur mobile */
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="/img/tbgc-logo.png" alt="Logo BoardGameArena" onerror="this.style.display='none';">
+    <div class="logo-text">BoardGameArena</div>
+    <nav>
+      <a href="accueil.html" class="active">Accueil</a>
+      <a href="tournoi.html">Tournoi</a>
+      <a href="profile.html" id="profileLink" style="display: none;">Mon Profil</a>
+      <a href="add-game.html" id="addGameLink" style="display: none;">Ajouter un jeu</a>
+      <a href="accounte.html" id="loginLink">Connexion</a>
+      <span id="userInfo" class="user-info">Bienvenue, Jonathan</span>
+      <a href="#" id="logoutLink" style="display: none;">Déconnexion</a>
+      <a href="admin.html" id="adminLink" style="display: none;">Admin</a>
+    </nav>
+  </header>
+  <div class="game-of-month-wrapper">
+    <div class="game-of-month" id="gameOfMonth">
+      <span class="game-title">Jeu du mois</span>
+      <img id="gameOfMonthImage" src="/img/default.jpg" alt="Jeu du mois">
+      <div>
+        <h2 id="gameOfMonthName">Scythe</h2>
+        <p id="gameOfMonthError" class="error" style="display: none;">Erreur lors du chargement du jeu du mois.</p>
+        <a href="#" id="gameOfMonthDetails" class="details-btn">Voir détails</a>
+      </div>
+    </div>
+  </div>
+  <div class="catalogue">
+    <h2>Catalogue des jeux</h2>
+    <div class="search-bar">
+      <input type="text" id="searchInput" placeholder="Rechercher un jeu...">
+      <select id="genreFilter">
+        <option value="">Tous les genres</option>
+        <option value="Stratégie">Stratégie</option>
+        <option value="Wargame">Wargame</option>
+        <option value="Cartes">Cartes</option>
+        <option value="Dés">Dés</option>
+      </select>
+      <select id="playerFilter">
+        <option value="">Tous les joueurs</option>
+        <option value="1">1 joueur</option>
+        <option value="2">2 joueurs</option>
+        <option value="3-4">3-4 joueurs</option>
+        <option value="5+">5+ joueurs</option>
+      </select>
+      <select id="durationFilter">
+        <option value="">Toute durée</option>
+        <option value="0-30">0-30 min</option>
+        <option value="31-60">31-60 min</option>
+        <option value="61-120">61-120 min</option>
+        <option value="120+">120+ min</option>
+      </select>
+    </div>
+    <div id="gamesGrid"></div>
+    <div id="gamesError" class="error"></div>
+    <div id="voteSection">
+      <select id="voteGameSelect"></select>
+      <button onclick="castVote()">Voter</button>
+      <p id="voteResult"></p>
+    </div>
+    <div id="proposeGameForm">
+      <input type="text" id="gameName" placeholder="Nom du jeu *"><br>
+      <textarea id="gameDescription" placeholder="Description"></textarea><br>
+      <select id="gameGenre">
+        <option value="">Genre *</option>
+        <option value="Stratégie">Stratégie</option>
+        <option value="Wargame">Wargame</option>
+        <option value="Cartes">Cartes</option>
+        <option value="Dés">Dés</option>
+      </select><br>
+      <input type="number" id="minPlayers" placeholder="Nombre min de joueurs *"><br>
+      <button onclick="proposeGame()">Proposer</button>
+    </div>
+  </div>
+  <div id="gameModal" class="modal">
+    <div class="modal-content">
+      <span class="close">×</span>
+      <h2 id="modalTitle"></h2>
+      <p id="modalDescription"></p>
+      <p id="noDescription" style="display: none;">Aucune description disponible.</p>
+      <p>Genre: <span id="modalGenre"></span></p>
+      <p>Joueurs: <span id="modalPlayers"></span></p>
+      <p>Durée: <span id="modalDuration"></span></p>
+      <p>Date de sortie: <span id="modalRelease"></span></p>
+      <p>Note moyenne: <span id="modalAvgScore"></span></p>
+      <div id="loginPrompt" style="display: none;">Veuillez vous connecter pour noter ou commenter.</div>
+      <select id="rateSelect">
+        <option value="">Note (1-10)</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+        <option value="9">9</option>
+        <option value="10">10</option>
+      </select>
+      <button id="submitRateButton">Soumettre la note</button>
+      <div id="userScore" style="display: none;">Votre note : <span id="userScoreValue"></span></div>
+      <div id="commentPrompt" style="display: none;">Veuillez vous connecter pour commenter.</div>
+      <div class="comment-section">
+        <textarea id="commentInput" placeholder="Entrez votre commentaire"></textarea><br>
+        <button id="commentSubmit">Prévisualiser</button>
+        <button id="commentSend" style="display: none;">Envoyer</button>
+      </div>
+      <div id="commentsContainer">
+        <h3>Commentaires</h3>
+        <!-- Les commentaires seront insérés ici dynamiquement -->
+      </div>
+    </div>
+  </div>
+  <script src="/html/accueil.js"></script>
+  <script>
+    let lastScrollTop = 0;
+    const header = document.querySelector('header');
+
+    window.addEventListener('scroll', () => {
+      let currentScrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+      if (currentScrollTop > lastScrollTop) {
+        // Défilement vers le bas : cacher le header
+        header.style.transform = 'translateY(-100%)';
+      } else {
+        // Défilement vers le haut : afficher le header
+        header.style.transform = 'translateY(0)';
+      }
+      lastScrollTop = currentScrollTop <= 0 ? 0 : currentScrollTop; // Éviter les valeurs négatives
+    });
+  </script>
+</body>
+</html>

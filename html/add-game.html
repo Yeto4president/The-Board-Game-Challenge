@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ajouter un jeu - BoardGameArena</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f4f4f4;
+      padding-top: 110px;
+    }
+    .container {
+      max-width: 600px;
+      margin: 20px auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+    h2 {
+      text-align: center;
+      color: #e63946;
+      margin-bottom: 20px;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 500;
+      color: #333;
+    }
+    input, textarea, select {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+      font-size: 16px;
+    }
+    textarea {
+      height: 100px;
+      resize: vertical;
+    }
+    button {
+      background-color: #e63946;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      width: 100%;
+      font-size: 16px;
+    }
+    button:hover {
+      background-color: #d00000;
+    }
+    .error {
+      color: #d00000;
+      text-align: center;
+      margin-top: 10px;
+    }
+    .success {
+      color: #4CAF50;
+      text-align: center;
+      margin-top: 10px;
+    }
+    #imagePreview {
+      max-width: 100%;
+      margin-top: 10px;
+      border-radius: 8px;
+      display: none;
+    }
+    .back-link {
+      display: block;
+      text-align: center;
+      margin-top: 20px;
+      color: #e63946;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .back-link:hover {
+      text-decoration: underline;
+    }
+    /* Barre du haut identique à accueil.html/profile.html */
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 10px;
+      height: 80px;
+      background: var(--card-bg, #fff);
+      border-radius: 15px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+      padding: 10px 20px;
+      transition: transform 0.3s ease;
+    }
+    header img {
+      max-width: 100px;
+      margin-right: 10px;
+    }
+    .logo-text {
+      font-size: 2.2em;
+      font-weight: 700;
+      color: transparent;
+      background: linear-gradient(45deg, #e63946, #d62828);
+      background-clip: text;
+      -webkit-background-clip: text;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+    }
+    nav {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 0;
+    }
+    nav a, nav span {
+      margin: 0 5px;
+      padding: 5px 8px;
+      font-size: 0.9em;
+      border-radius: 20px;
+      white-space: nowrap;
+      color: #e63946;
+      font-weight: 500;
+      text-decoration: none;
+      transition: color 0.3s ease, text-shadow 0.3s ease;
+    }
+    nav a.active {
+      background-color: #e63946;
+      color: #fff;
+    }
+    nav a:hover {
+      color: #d62828;
+      text-shadow: 0 0 5px rgba(230, 57, 70, 0.3);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="/img/tbgc-logo.png" alt="Logo BoardGameArena" onerror="this.style.display='none';">
+    <div class="logo-text">BoardGameArena</div>
+    <nav>
+      <a href="accueil.html" class="active">Accueil</a>
+      <a href="tournoi.html">Tournoi</a>
+      <a href="profile.html" id="profileLink" style="display: none;">Mon Profil</a>
+      <a href="add-game.html" id="addGameLink" style="display: none;">Ajouter un jeu</a>
+      <a href="accounte.html" id="loginLink">Connexion</a>
+      <span id="userInfoBarre" class="user-info"></span>
+      <a href="#" id="logoutLink" style="display: none;">Déconnexion</a>
+      <a href="admin.html" id="adminLink" style="display: none;">Admin</a>
+    </nav>
+  </header>
+  <div class="container">
+    <h2>Ajouter un nouveau jeu</h2>
+    <div class="form-group">
+      <label for="gameName">Nom du jeu *</label>
+      <input type="text" id="gameName" placeholder="Entrez le nom du jeu">
+    </div>
+    <div class="form-group">
+      <label for="gameDescription">Description</label>
+      <textarea id="gameDescription" placeholder="Entrez une description du jeu"></textarea>
+    </div>
+    <div class="form-group">
+      <label for="gameGenre">Genre *</label>
+      <select id="gameGenre">
+        <option value="">Sélectionnez un genre</option>
+        <option value="Stratégie">Stratégie</option>
+        <option value="Wargame">Wargame</option>
+        <option value="Cartes">Cartes</option>
+        <option value="Dés">Dés</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="minPlayers">Nombre minimum de joueurs *</label>
+      <input type="number" id="minPlayers" placeholder="Ex: 2" min="1">
+    </div>
+    <div class="form-group">
+      <label for="maxPlayers">Nombre maximum de joueurs *</label>
+      <input type="number" id="maxPlayers" placeholder="Ex: 4" min="1">
+    </div>
+    <div class="form-group">
+      <label for="gameDuration">Durée moyenne (minutes) *</label>
+      <input type="number" id="gameDuration" placeholder="Ex: 60" min="1">
+    </div>
+    <div class="form-group">
+      <label for="releaseDate">Date de sortie *</label>
+      <input type="date" id="releaseDate">
+    </div>
+    <div class="form-group">
+      <label for="gameImage">Image du jeu *</label>
+      <input type="file" id="gameImage" accept="image/*">
+      <img id="imagePreview" alt="Prévisualisation de l'image">
+    </div>
+    <button onclick="submitGame()">Proposer le jeu</button>
+    <p id="message" class="error"></p>
+    <a href="accueil.html" class="back-link">Retour à l'accueil</a>
+  </div>
+  <script>
+    // Prévisualisation de l'image
+    document.getElementById('gameImage').addEventListener('change', function(event) {
+      const file = event.target.files[0];
+      const imagePreview = document.getElementById('imagePreview');
+      const message = document.getElementById('message');
+      if (file) {
+        if (!file.type.startsWith('image/')) {
+          message.textContent = 'Veuillez sélectionner une image valide.';
+          message.className = 'error';
+          this.value = '';
+          imagePreview.style.display = 'none';
+          return;
+        }
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          imagePreview.src = e.target.result;
+          imagePreview.style.display = 'block';
+          message.textContent = '';
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    async function submitGame() {
+      const message = document.getElementById('message');
+      message.textContent = '';
+      message.className = 'error';
+
+      // Vérifier si l'utilisateur est connecté
+      const token = localStorage.getItem('token');
+      if (!token) {
+        message.textContent = 'Veuillez vous connecter pour proposer un jeu.';
+        window.location.href = 'accounte.html';
+        return;
+      }
+
+      // Récupérer les valeurs des champs
+      const gameData = {
+        Nom_jeux: document.getElementById('gameName').value.trim(),
+        description: document.getElementById('gameDescription').value.trim(),
+        genre: document.getElementById('gameGenre').value,
+        min_joueurs: parseInt(document.getElementById('minPlayers').value),
+        max_joueurs: parseInt(document.getElementById('maxPlayers').value),
+        duree_moyenne: parseInt(document.getElementById('gameDuration').value),
+        date_Sortie: document.getElementById('releaseDate').value,
+        image_url: '', // Sera rempli après l'upload
+        status: 'pending'
+      };
+
+      // Validation des champs obligatoires
+      if (!gameData.Nom_jeux) {
+        message.textContent = 'Le nom du jeu est requis.';
+        return;
+      }
+      if (!gameData.genre) {
+        message.textContent = 'Le genre est requis.';
+        return;
+      }
+      if (!gameData.min_joueurs || gameData.min_joueurs < 1) {
+        message.textContent = 'Le nombre minimum de joueurs doit être supérieur ou égal à 1.';
+        return;
+      }
+      if (!gameData.max_joueurs || gameData.max_joueurs < gameData.min_joueurs) {
+        message.textContent = 'Le nombre maximum de joueurs doit être supérieur ou égal au minimum.';
+        return;
+      }
+      if (!gameData.duree_moyenne || gameData.duree_moyenne < 1) {
+        message.textContent = 'La durée moyenne doit être supérieure ou égale à 1 minute.';
+        return;
+      }
+      if (!gameData.date_Sortie) {
+        message.textContent = 'La date de sortie est requise.';
+        return;
+      }
+
+      // Gestion de l'image
+      const gameImage = document.getElementById('gameImage').files[0];
+      if (!gameImage) {
+        message.textContent = 'Une image est requise.';
+        return;
+      }
+
+      // Uploader l'image en premier
+      try {
+        const formData = new FormData();
+        formData.append('image', gameImage);
+
+        const uploadResponse = await fetchWithToken('http://localhost:3000/api/upload-image', {
+          method: 'POST',
+          body: formData
+        });
+
+        gameData.image_url = uploadResponse.imagePath; // Récupérer le chemin de l'image
+      } catch (error) {
+        console.error('Erreur lors de l\'upload de l\'image:', error);
+        message.textContent = 'Erreur lors de l\'upload de l\'image: ' + error.message;
+        return;
+      }
+
+      // Envoyer les données du jeu
+      try {
+        const data = await fetchWithToken('http://localhost:3000/api/propose-game', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(gameData)
+        });
+        message.textContent = 'Jeu proposé avec succès ! En attente de validation par un admin.';
+        message.className = 'success';
+        // Réinitialiser le formulaire
+        document.querySelectorAll('input, textarea, select').forEach(input => {
+          if (input.type !== 'file') input.value = '';
+        });
+        document.getElementById('gameImage').value = '';
+        document.getElementById('imagePreview').style.display = 'none';
+      } catch (error) {
+        console.error('Erreur:', error);
+        message.textContent = 'Erreur lors de la proposition du jeu: ' + error.message;
+      }
+    }
+  </script>
+  <script src="/html/accueil.js"></script>
+  <script>
+    // Gestion dynamique de la barre du haut (affichage des liens selon l'utilisateur)
+    function parseJwt(token) {
+      try {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(atob(base64).split('').map(c => {
+          return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+        return JSON.parse(jsonPayload);
+      } catch (error) {
+        return null;
+      }
+    }
+    function displayUserInfoBarre() {
+      const token = localStorage.getItem('token');
+      const userInfoBarre = document.getElementById('userInfoBarre');
+      const logoutLink = document.getElementById('logoutLink');
+      const loginLink = document.getElementById('loginLink');
+      const addGameLink = document.getElementById('addGameLink');
+      const adminLink = document.getElementById('adminLink');
+      const profileLink = document.getElementById('profileLink');
+      if (!userInfoBarre || !logoutLink || !loginLink || !addGameLink || !adminLink || !profileLink) return;
+      if (token) {
+        const decoded = parseJwt(token);
+        if (!decoded) {
+          localStorage.removeItem('token');
+          window.location.href = 'accounte.html';
+          return;
+        }
+        userInfoBarre.textContent = `Bienvenue, ${decoded.pseudo}`;
+        logoutLink.style.display = 'inline';
+        loginLink.style.display = 'none';
+        addGameLink.style.display = 'inline';
+        profileLink.style.display = 'inline';
+        logoutLink.onclick = () => {
+          localStorage.removeItem('token');
+          window.location.reload();
+        };
+        addGameLink.onclick = () => {
+          window.location.href = 'add-game.html';
+        };
+        if (decoded.role && decoded.role === 'admin') {
+          adminLink.style.display = 'inline';
+        } else {
+          adminLink.style.display = 'none';
+        }
+      } else {
+        userInfoBarre.textContent = '';
+        logoutLink.style.display = 'none';
+        loginLink.style.display = 'inline';
+        addGameLink.style.display = 'none';
+        adminLink.style.display = 'none';
+        profileLink.style.display = 'none';
+      }
+    }
+    // Gestion du scroll pour masquer/afficher la barre
+    let lastScrollTop = 0;
+    const header = document.querySelector('header');
+    window.addEventListener('scroll', () => {
+      let currentScrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      if (currentScrollTop > lastScrollTop) {
+        header.style.transform = 'translateY(-100%)';
+      } else {
+        header.style.transform = 'translateY(0)';
+      }
+      lastScrollTop = currentScrollTop <= 0 ? 0 : currentScrollTop;
+    });
+    displayUserInfoBarre();
+  </script>
+</body>
+</html>

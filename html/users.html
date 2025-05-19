@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Gestion des utilisateurs - BoardGameArena</title>
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+  <nav class="topbar">
+    <img src="../img/tbgc-logo.png" alt="BoardGameArena Logo" class="logo" />
+    <ul>
+      <li><a href="accueil.html">Accueil</a></li>
+      <li><a href="tournoi.html">Quizz</a></li>
+      <li><a href="accounte.html">Connexion</a></li>
+    </ul>
+  </nav>
+
+  <section class="auth-section">
+    <div class="auth-container">
+      <h2>Gestion des utilisateurs</h2>
+      <form id="addUserForm">
+        <label for="username">Nom</label>
+        <input type="text" id="username" required />
+        <label for="email">Email</label>
+        <input type="email" id="email" required />
+        <label for="password">Mot de passe</label>
+        <input type="password" id="password" required />
+        <label for="role">Rôle</label>
+        <select id="role">
+          <option value="admin">Admin</option>
+          <option value="utilisateur">Utilisateur</option>
+        </select>
+        <button type="submit" class="btn-cta">Ajouter</button>
+      </form>
+
+      <table id="userTable">
+        <thead>
+          <tr>
+            <th>Nom</th>
+            <th>Email</th>
+            <th>Rôle</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+
+      <h2>Gestion des jeux</h2>
+      <form id="addGameForm">
+        <label for="gameName">Nom du jeu</label>
+        <input type="text" id="gameName" required />
+        <label for="description">Description</label>
+        <textarea id="description" required></textarea>
+        <label for="genre">Genre</label>
+        <input type="text" id="genre" required />
+        <label for="minPlayers">Min Joueurs</label>
+        <input type="number" id="minPlayers" required />
+        <label for="maxPlayers">Max Joueurs</label>
+        <input type="number" id="maxPlayers" required />
+        <label for="duree">Durée moyenne (min)</label>
+        <input type="number" id="duree" required />
+        <button type="submit" class="btn-cta">Ajouter</button>
+      </form>
+
+      <table id="gameTable">
+        <thead>
+          <tr>
+            <th>Nom</th>
+            <th>Genre</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer>
+    <p>© 2025 - BoardGameArena</p>
+  </footer>
+
+  <script src="../html/users.js"></script>
+</body>
+</html>
